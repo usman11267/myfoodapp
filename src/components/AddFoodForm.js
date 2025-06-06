@@ -91,6 +91,16 @@ const AddFoodForm = ({ onFoodAdded, onClose }) => {
         throw new Error('Please enter valid serving size');
       }
 
+      // Image validation with alert
+      if (!selectedFile) {
+        alert('📷 Please add an image for the food item!\n\n' +
+              '🔹 Images help customers see what they\'re ordering\n' +
+              '🔹 Make your food more appealing\n' +
+              '🔹 Increase order likelihood\n\n' +
+              'Click "Choose Image File" to add a photo.');
+        return;
+      }
+
       // Upload image first
       const imagePath = await uploadImage();
 

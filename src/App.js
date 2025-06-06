@@ -5,6 +5,7 @@ import OrderForm from './components/OrderForm';
 import LoadingPage from './components/LoadingPage';
 import AddFoodForm from './components/AddFoodForm';
 import OrderHistory from './components/OrderHistory';
+import RemoveFoods from './components/RemoveFoods';
 import { foodAPI } from './services/api';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showOrderHistory, setShowOrderHistory] = useState(false);
+  const [showRemoveFoods, setShowRemoveFoods] = useState(false);
 
   // Fetch food items from backend
   const fetchFoodItems = useCallback(async () => {
@@ -103,6 +105,14 @@ function App() {
     fetchFoodItems(); // Refresh the food list
   }, [fetchFoodItems]);
 
+  // Handle successful food removal
+  const handleFoodRemoved = useCallback((removedFoodId) => {
+    // Remove from food items
+    setFoodItems(prevItems => prevItems.filter(item => item._id !== removedFoodId));
+    // Also remove from cart if it exists there
+    setCartItems(prevCart => prevCart.filter(item => item.food._id !== removedFoodId));
+  }, []);
+
   // Show loading page
   if (loading) {
     return <LoadingPage />;
@@ -149,6 +159,12 @@ function App() {
           >
             📋 Order History
           </button>
+          <button 
+            onClick={() => setShowRemoveFoods(!showRemoveFoods)}
+            className="remove-foods-button"
+          >
+            🗑️ Remove Foods
+          </button>
           <div className="cart-summary">
             🛒 Cart: {cartItems.length} items
           </div>
@@ -165,6 +181,13 @@ function App() {
       {showOrderHistory && (
         <OrderHistory 
           onClose={() => setShowOrderHistory(false)}
+        />
+      )}
+
+      {showRemoveFoods && (
+        <RemoveFoods 
+          onClose={() => setShowRemoveFoods(false)}
+          onFoodRemoved={handleFoodRemoved}
         />
       )}
 
